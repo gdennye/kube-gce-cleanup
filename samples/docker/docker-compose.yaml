@@ -1,0 +1,23 @@
+version: '3.9'
+
+services:
+  kube-gce-cleanup:
+    image: dennyegarcia/kube-gce-cleanup:1.0.10
+    environment:
+      PROJECT: <project-id>
+      REGION: <region>
+      ZONE: <zone>
+      GKE_CLUSTER_NAME: <gke-cluster-name>
+      GOOGLE_APPLICATION_CREDENTIALS: /cleanup/credential.json
+      ENV: <env>
+      KUBE_CONTEXT: gke_<project-id>_<zone>_<gke-cluster-name>
+    volumes:
+      - ./credential.json:/cleanup/credential.json:ro
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 64M

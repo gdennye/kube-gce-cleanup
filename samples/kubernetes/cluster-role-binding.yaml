@@ -1,0 +1,14 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: rolebinding-kube-gce-cleanup
+  namespace: kube-gce-cleanup
+subjects:
+- kind: ServiceAccount
+  name: sa-kube-gce-cleanup
+  namespace: kube-gce-cleanup
+roleRef:
+  kind: ClusterRole
+  name: role-kube-gce-cleanup
+  apiGroup: rbac.authorization.k8s.io

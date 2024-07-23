@@ -1,0 +1,10 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  namespace: kube-gce-cleanup
+  name: role-kube-gce-cleanup
+rules:
+- apiGroups: [""]
+  resources: ["services"]
+  verbs: ["list", "get", "watch"]
