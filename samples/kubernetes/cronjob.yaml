@@ -1,0 +1,52 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: kube-gce-cleanup
+  namespace: kube-gce-cleanup
+  labels:
+    app: kube-gce-cleanup
+spec:
+  schedule: "55 18 * * 1-5"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: kube-gce-cleanup
+        spec:
+          serviceAccountName: sa-kube-gce-cleanup
+          containers:
+            - image: dennyegarcia/kube-gce-cleanup:1.0.10
+              name: kube-gce-cleanup
+              imagePullPolicy: Always
+              env:
+                - name: PROJECT
+                  value: <project-id>
+                - name: REGION
+                  value: <region>
+                - name: ZONE
+                  value: <zone>
+                - name: GKE_CLUSTER_NAME
+                  value: <gke-cluster-name>
+                - name: ENV
+                  value: <env>
+                - name: KUBE_CONTEXT
+                  value: gke_<project-id>_<zone>_<gke-cluster-name>
+                - name: GOOGLE_APPLICATION_CREDENTIALS
+                  value: /cleanup/credential.json
+              volumeMounts:
+                - mountPath: /cleanup/credential.json
+                  name: google-application-credentials
+                  readOnly: true
+                  subPath: credential.json
+              resources:
+                limits:
+                  cpu: 2000m
+                  memory: 256Mi
+                requests:
+                  cpu: 100m
+                  memory: 64Mi
+          volumes:
+            - name: google-application-credentials
+              secret:
+                secretName: google-application-credentials
